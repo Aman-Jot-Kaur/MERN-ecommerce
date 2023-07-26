@@ -5,6 +5,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { initializeApp } from "firebase/app";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
+import { useDispatch, useSelector } from "react-redux";
 import { getStorage } from "firebase/storage";
 import { Toaster, toast } from 'sonner'
 import {
@@ -33,7 +34,10 @@ const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
 const VendorProductPage = () => {
-  const [title, setTitle] = useState("");
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+  const role=user.user.role;
+  const [title, setTitle] = useState();
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState(1);
@@ -42,12 +46,26 @@ const VendorProductPage = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [imageindex, setimageindex] = useState(0);
   const [images, setimages] = useState([]);
+
   const [updatedimages, updatedsetimages] = useState([images]);
   const openEditForm = (product) => {
     setSelectedProduct(product);
+  
     setEditFormOpen(true);
   };
 
+  useEffect(()=>{if(role!=="vendor"){
+    navigate(-1);
+}},[])
+  useEffect(()=>{
+
+
+    setTitle(selectedProduct?.title);
+    setDescription(selectedProduct?.description);
+    setPrice(selectedProduct?.price);
+    setDiscounted(selectedProduct?.discountedPrice);
+    setCategory(selectedProduct?.category);
+  },[selectedProduct])
   const closeEditForm = () => {
     setSelectedProduct(null);
     setEditFormOpen(false);
@@ -55,13 +73,16 @@ const VendorProductPage = () => {
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
-
+      console.log(images)
     const _id = selectedProduct._id;
-    if (updatedimages.length < 4) {
+    if (images.length < 3) {
       toast("kindly wait as images upload ")
     }
     else {
-      axios.post("http://localhost:3001/updateproduct", { _id, title, description, price, discounted, images }).then(
+      setTitle(selectedProduct.title);
+      
+      console.log(title);
+      axios.post("http://localhost:3001/updateproduct", { _id, title, description, price, discounted:"13000", images }).then(
         (res) => {
 
           console.log("user updated")
@@ -82,7 +103,9 @@ const VendorProductPage = () => {
         });
       console.log("Product edited", selectedProduct);
       closeEditForm();
+      window.location.reload();
     }
+
   };
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -198,10 +221,11 @@ const VendorProductPage = () => {
             else
               temp_image.push(url)
           }
+          console.log("tempimg",temp_image);
           setimages(temp_image);
           updatedsetimages(images);
           console.log(updatedimages);
-          setimages([])
+        
         });
       }
     );
@@ -442,11 +466,12 @@ const VendorProductPage = () => {
               <form onSubmit={handleEditSubmit}>
                 <h3>Edit Product</h3>
                 <label htmlFor="title">Title:</label>
+            
                 <input
                   onChange={handleTitleChange}
                   type="text"
                   name="title"
-                  value={selectedProduct.title}
+                  value={title}
                   required
                   placeholder="Product Title"
                 />
@@ -455,7 +480,7 @@ const VendorProductPage = () => {
                   onChange={handleDescriptionChange}
                   type="text"
                   name="description"
-                  value={selectedProduct.description}
+                  value={description}
                   placeholder="Product Description"
                 />
                 <label htmlFor="category">Category:</label>
@@ -463,7 +488,7 @@ const VendorProductPage = () => {
                   onChange={handleCategoryChange}
                   type="text"
                   name="category"
-                  value={selectedProduct.category}
+                  value={category}
                   placeholder="fashion/tech/arts"
                 />
                 <label htmlFor="price">Price:</label>
@@ -471,25 +496,18 @@ const VendorProductPage = () => {
                   onChange={handlePriceChange}
                   type="number"
                   name="price"
-                  value={selectedProduct.price}
+                  value={price}
                   required
                   placeholder="Product Price"
                 />
-                <label htmlFor="discounted">Discounted Price:</label>
-                <input
-                  onChange={handleDiscountedChange}
-                  type="number"
-                  name="discounted"
-                  value={selectedProduct.discounted}
-                  placeholder="Discounted Price"
-                />
+                
                 <div >
                   <div ><img src={selectedProduct.images[0]} style={{ margin: "5px", width: "100px", height: "100px" }}></img>
                     <img src={selectedProduct.images[1]} style={{ width: "100px", height: "100px" }}></img>
                     <img src={selectedProduct.images[2]} style={{ width: "100px", height: "100px" }}></img>
                     <img src={selectedProduct.images[3]} style={{ width: "100px", height: "100px" }}></img></div>
                   <div>
-                    <p>Images before:</p>
+                    <p>New Images:</p>
                     <input
 
                       type="file"

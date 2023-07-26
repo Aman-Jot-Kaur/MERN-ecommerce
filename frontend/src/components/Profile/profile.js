@@ -40,6 +40,7 @@ const Profile = () => {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [passwordAlert, setPasswordAlert] = useState(false);
   const [pic, setPic] = useState('');
+  const [num,setnum]=useState();
   useEffect(() => {
     const mail = localStorage.getItem("mail");
     console.log("mail", mail)
@@ -48,11 +49,17 @@ const Profile = () => {
         const user = res.data;
         console.log(user)
         setEmail(user.email)
+     
+        setPhone(user.number)
+       
+        
         setPhone(user.number)
         setName(user.displayName)
         setTotalOrders(user.address)
+        if(user.password!==undefined)
         setPassword(user.password)
-
+        else
+        setPassword("")
         if (user.profile !== undefined) setPic(user.profile)
 
         user.profile == undefined && setPic("https://img.freepik.com/free-vector/cheerful-cute-girl-character-hand-drawn-cartoon-art-illustration_56104-968.jpg?w=2000")
@@ -76,34 +83,54 @@ const Profile = () => {
   const handlePhoneNumberChange = (e) => {
     const value = e.target.value;
 
-    if (value.length === 0 || (value.length <= 10 && /^\d*$/.test(value))) {
-      setPhone(value);
-    }
+    // if (value.length !== 0 && (value.length >= 10 && /^\d*$/.test(value))) {
+    //   setnum(value);
+    //   console.log(num.length)
+    // }
+    setnum(value);
+    if(value)
+    console.log(num?.length)
   };
   const handleSave = () => {
     if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) {
       toast.error("Please enter a valid email address.");
       return;
     }
+  
     dispatch(updateAddress(totalOrders));
 
     dispatch(updateNumber(phone));
-    if (confirmPassword == "") {
-      axios.post("http://localhost:3001/updateuser", { email, number: phone, displayName: name, address: totalOrders, profile: pic }).then(
+    if (confirmPassword == "" && num!=='') {
+      if(num.length!==10){
+        toast.error("Please enter a valid number");
+        return;
+      }
+      axios.post("http://localhost:3001/updateuser", { email, number: num, displayName: name, address: totalOrders, profile: pic }).then(
         (res) => {
           console.log(res)
         })
 
     }
-    else {
-      axios.post("http://localhost:3001/updateuser", { email, number: phone, displayName: name, address: totalOrders, password: confirmPassword, profile: pic }).then(
+    else if(num=='' && confirmPassword == ""){
+      axios.post("http://localhost:3001/updateuser", { email, displayName: name, address: totalOrders,  profile: pic }).then(
         (res) => {
           console.log(res)
-        })
-      dispatch(updatePassword(confirmPassword));
-    }
+        })}
+        else if(num=='' && confirmPassword == ""){
+          axios.post("http://localhost:3001/updateuser", { email, displayName: name, address: totalOrders,  profile: pic,password:confirmPassword }).then(
+            (res) => {
+              console.log(res)
+            })}
+            else{
+              axios.post("http://localhost:3001/updateuser", { email,number: num, displayName: name, address: totalOrders,  profile: pic,password:confirmPassword }).then(
+                (res) => {
+                  console.log(res)
+                })
+            }
+      setCurrentPassword('');
+    
     setEditMode(false);
-
+    window.location.reload();
   };
   function handleUpload(file) {
 
@@ -235,7 +262,7 @@ const Profile = () => {
                 />
               )}
             </div>
-            <div className="profile-row">
+            {phone!==undefined && <div className="profile-row">
               <label>Phone:</label>
               {!editMode ? (
                 <span>{phone}</span>
@@ -243,6 +270,7 @@ const Profile = () => {
                 <input
                   type="number"
                   value={phone}
+                 disabled
                   onChange={handlePhoneNumberChange}
                   style={{ width: "100%" }}
                   placeholder="Number"
@@ -253,7 +281,26 @@ const Profile = () => {
                   pattern="[0-9]*"
                 />
               )}
-            </div>
+            </div>}
+            {phone==undefined && <div className="profile-row">
+              <label>Phone:</label>
+              {!editMode ? (
+                <span>{phone}</span>
+              ) : (
+                <input
+                  type="number"
+                 
+                  onChange={handlePhoneNumberChange}
+                  style={{ width: "100%" }}
+                  placeholder="Number"
+                  // min={1000000000}
+                  max={9999999999}
+                maxLength="10"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                />
+              )}
+            </div>}
             <div className="profile-row">
               <label>Address:</label>
               {!editMode ? (
@@ -309,6 +356,7 @@ const Profile = () => {
               <div className="modal-row">
                 <label>Previous Password:</label>
                 <input
+              placeholder='leave empty if no password'
                   type="password"
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}

@@ -3,6 +3,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import { getAuth } from "firebase/auth";
 import axios from "axios";
+import { useEffect } from "react";
 import "./Signup.css";
 import { useNavigate } from "react-router-dom";
 import { Toaster, toast } from 'sonner'
@@ -26,7 +27,12 @@ const SignUpForm = () => {
   const [phoneNumber, setPhoneNumber] = useState();
   const [role, setRole] = useState("customer");
   const navigate = useNavigate();
-
+  useEffect(()=>{
+    const check=localStorage.getItem("loggedin");
+    if(check=="true"){
+      navigate(-1);
+    }
+    },[])
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
   };
@@ -235,15 +241,16 @@ const SignUpForm = () => {
                 <button type="submit" className="signup-button">
                   Submit
                 </button>
+                <button className="google-button" onClick={handleSignUpWithGoogle}>
+                Sign Up with Google
+              </button>
               </div>
             </form>
             <div className="buttons">
-              <button className="google-button" onClick={handleSignUpWithGoogle}>
-                Sign Up with Google
-              </button>
-              <button className="phone-button" onClick={handleSignUpWithPhoneNumber}>
+              
+              {/* <button className="phone-button" onClick={handleSignUpWithPhoneNumber}>
                 Sign Up with Otp
-              </button>
+              </button> */}
             </div>
             <p>OR</p>
             <button

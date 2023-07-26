@@ -2,7 +2,10 @@ import React, { useState,useEffect } from 'react';
 import "./adminpage.css"
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useDispatch, useSelector } from "react-redux";
 const PendingPage = () => {
+    const dispatch = useDispatch();
+    const usernow = useSelector((state) => state.user);
     const [cartOpen, setCartOpen] = useState(false);
     const [products, setProducts] = useState([
     ]);
@@ -14,6 +17,9 @@ const PendingPage = () => {
         setCartOpen(!cartOpen);
     };
     const navigate=useNavigate();
+    useEffect(()=>{if(usernow.user.role!=="admin"){
+        navigate(-1);
+    }},[])
     useEffect(() => {
       
         const email=localStorage.getItem("mail");

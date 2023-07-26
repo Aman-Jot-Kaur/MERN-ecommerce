@@ -36,7 +36,12 @@ exports.loginfunction = async (req, res) => {
     }
   }
   else if (num) {
-    res.send(num)
+    const pass = (password == num.password) ? "true" : "false";
+    if (pass == "true")
+      res.send(num)
+    else {
+      res.send("password not correct")
+    }
   }
   else {
     res.send("account not found")
@@ -60,7 +65,7 @@ exports.loginfunctionwithgoogle = async (req, res) => {
 
   }
   else {
-    res.send(null)
+    res.send("not found")
   }
 }
 
@@ -147,7 +152,7 @@ exports.getuser = (req, res) => {
       { email: mail },
       { number: mail }]
   }).then(function (models) {
-
+console.log(models)
     res.send(models)
   })
     .catch(function (err) {
@@ -159,13 +164,13 @@ exports.updateproduct = (req, res) => {
   const description = req.body.description;
   const category = req.body.category;
   const price = req.body.price;
-  const discounted = req.body.discounted;
+  const discountedPrice = req.body.discounted;
   const images = req.body.images;
+  const title=req.body.title;
   const person = ProductModel.findOneAndUpdate({
-    $or: [
-      { _id: req.body._id },
-      { _id: req.body._id }]
-  }, { description, category, price, discounted, images }).then(function (models) {
+    _id: req.body._id 
+      
+  }, { description, category, price, discountedPrice, images,title }).then(function (models) {
 
     console.log("updated product")
     console.log(person)

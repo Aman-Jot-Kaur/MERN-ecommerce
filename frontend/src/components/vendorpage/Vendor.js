@@ -9,12 +9,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser, setIsLoggedIn, setLoading, setError, selectUser } from '../../features/userSlice';
 import axios from 'axios';
 const VendorPage = () => {
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.user);
     const navigate = useNavigate();
     const [cartOpen, setCartOpen] = useState(false);
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([
 
     ]);
+    const role=user.user.role;
     const [pic, setPic] = useState();
     const [address, setAddress] = useState();
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -53,6 +56,9 @@ const VendorPage = () => {
                 console.log("asd", address)
             })
     }, [])
+    useEffect(()=>{if(role!=="vendor"){
+        navigate(-1);
+    }},[])
     const productClick = (product) => {
         localStorage.setItem("product", JSON.stringify(product));
         console.log(product)
@@ -88,7 +94,7 @@ const VendorPage = () => {
 
     const handleLogout = () => {
         localStorage.setItem("mail", "");
-
+    
         localStorage.setItem("loggedin", 'false');
         firebase.auth().signOut().then(function () {
             toast.success("signed out")

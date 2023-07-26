@@ -111,16 +111,7 @@ const Productdetail = () => {
             <p>Description:{product.description}</p>
             <p>Cost:{p * quantity}$</p>
             <p>Category : {product.category}</p>
-            <div className="quantity-input">
-              <label htmlFor="quantity">Quantity:</label>
-              <input
-                type="number"
-                id="quantity"
-                min="1"
-                value={quantity}
-                onChange={handleQuantityChange}
-              />
-            </div>
+       
             <button style={{ backgroundColor: "Green" }} onClick={handleAddToCart}>Add to Cart</button>
             <button style={{ backgroundColor: "gray" }} onClick={() => { navigate(-1) }}>Continue browsing</button>
           </div>

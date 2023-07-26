@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser, setIsLoggedIn, setLoading, setError, selectUser } from '../../features/userSlice';
 import axios from 'axios';
 const AdminPage = () => {
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.user);
     const [cartOpen, setCartOpen] = useState(false);
     const [products, setProducts] = useState([
 
@@ -29,6 +31,9 @@ const AdminPage = () => {
             )
             : products)
     };
+    useEffect(()=>{if(user.user.role!=="admin"){
+        navigate(-1);
+    }},[])
     useEffect(() => {
         setfilteredProducts(
             selectedCategory

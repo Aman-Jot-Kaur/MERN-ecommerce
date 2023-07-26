@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './vendorlist.css';
 import axios from 'axios';
+import { useDispatch, useSelector } from "react-redux";
+import { getStorage } from "firebase/storage";
 import { useNavigate } from 'react-router-dom';
 const ProfileList = () => {
-
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+  const role=user.user.role;
   const [profiles, setProfiles] = useState([]);
   const [disabling,setdisable]=useState();
   const handleDisable = (_id) => {
@@ -18,6 +22,9 @@ const ProfileList = () => {
  
   };
   const navigate = useNavigate();
+  useEffect(()=>{if(role!=="admin"){
+    navigate(-1);
+}},[])
   useEffect(() => {
 
     axios

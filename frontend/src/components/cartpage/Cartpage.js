@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import './CartPage.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Toaster, toast } from 'sonner'
 const CartPage = () => {
     const [products, setProducts] = useState([
         // Add more products as needed
     ]);
+    const[check,setcheck]=useState("false");
     useEffect(() => {
 
         const email = localStorage.getItem("mail");
@@ -23,15 +25,16 @@ const CartPage = () => {
     const [discount, setDiscount] = useState(0);
     const [tax] = useState(0.08);
 
-
+const[subtotal,setsubtotal]=useState(NaN);
 
 
 
     const navigate = useNavigate();
     const handleQuantityChange = (_id, quantity) => {
+        setcheck("true");
         const updatedProducts = products.map((product) => {
             if (product._id === _id) {
-                return { ...product, quantity: Math.max(quantity, 0) };
+                return { ...product, quantity: Math.max(quantity, 1) };
             }
             return product;
         });
@@ -48,7 +51,7 @@ const CartPage = () => {
         console.log(products)
         const email = localStorage.getItem("mail")
         axios.post("http://localhost:3001/cart", { cart: updatedProducts, email }).then(
-            alert("cart updated")
+            toast("cart updated")
 
         ).catch(error => {
             console.log(error)
@@ -62,13 +65,14 @@ const CartPage = () => {
     const handleApplyCoupon = () => {
         if (coupon === 'DISCOUNT20') {
             setDiscount(0.2 * calculateSubtotal());
-            alert("yay you received a discount!")
+            toast.success("yay you received a discount!")
         } else {
             setDiscount(0);
         }
     };
 
     const calculateSubtotal = () => {
+        
         return products.reduce(
             (subtotal, product) => subtotal + product.price * product.quantity,
             0
@@ -78,11 +82,12 @@ const CartPage = () => {
     const calculateTotal = () => {
         const subtotal = calculateSubtotal();
         const total = subtotal - discount + subtotal * tax;
+       
         return total.toFixed(2);
     };
 
     const handleBuyNow = () => {
-
+        if(products.length!==0 && check=="true"){
         const emptyarr = [];
         const email = localStorage.getItem("mail");
 
@@ -102,17 +107,26 @@ const CartPage = () => {
             })
         })
 
-        setProducts([]);
+        
+       
         axios.post("http://localhost:3001/cart", { cart: emptyarr, email }).then(
-            alert("order placed!")
+            toast.success("order placed!")
 
         ).catch(error => {
             console.log(error)
         })
+        setProducts([]);}
 
+        else{
+            toast.error("please add something first")
+        }
+        
     };
 
     return (
+        <div>
+             <Toaster />
+       
         <div className="cart-page">
 
             <div className="product-list-container">
@@ -137,8 +151,9 @@ const CartPage = () => {
                                     </button>
                                     <input
                                         type="number"
-                                        min="0"
+                                        min="1"
                                         value={product.quantity}
+                                        placeholder='enter quantity'
                                         onChange={(event) =>
                                             handleQuantityChange(
                                                 product._id,
@@ -219,6 +234,7 @@ const CartPage = () => {
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     );
 };

@@ -18,8 +18,13 @@ import ProfileList from './components/vendorlist/Vendorlist'
 import { Provider } from 'react-redux'; // Import the Provider
 import { PersistGate } from 'redux-persist/integration/react'; // Import PersistGate
 import { Store, persistor } from './store';
+import Notfound from './components/Notfound'
+import { connectStorageEmulator } from 'firebase/storage'
 const isLoggedIn = localStorage.getItem("loggedin");
 function App() {
+
+console.log(isLoggedIn);
+
   return (
 
     <Provider store={Store}>
@@ -28,8 +33,8 @@ function App() {
 
           <BrowserRouter>
             <Routes>
-              <Route element={<SignUpForm />} path="/"></Route>
-              <Route element={<Login />} path="/login"></Route>
+              <Route  element={ <SignUpForm /> }  path="/"></Route>
+              <Route element={ <Login />} path="/login"></Route>
               <Route element={(isLoggedIn == 'true') ? <CustomerPage /> : <Navigate to='/login' />} path="/customer"></Route>
               <Route element={(isLoggedIn == 'true') ? <VendorPage /> : <Navigate to='/login' />} path="/vendor"></Route>
               <Route element={(isLoggedIn == 'true') ? <AdminPage /> : <Navigate to='/login' />} path="/admin"></Route>

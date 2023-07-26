@@ -57,6 +57,9 @@ const CustomerPage = () => {
         console.log(user)
 
     }, [])
+    useEffect(()=>{if(user.user.role!=="customer"){
+        navigate(-1);
+    }},[])
     useEffect(() => {
         // Update the component state with Redux user data
         setAddress(user.user.address)
@@ -65,13 +68,13 @@ const CustomerPage = () => {
     const handleLogoutbtn = () => {
         localStorage.setItem("mail", "");
 
-        localStorage.setItem("loggedin", 'false');
+        localStorage.setItem("loggedin", '');
         firebase.auth().signOut().then(function () {
             toast.success("signed out")
         }).catch(function (error) {
             toast.error(error)
         });
-        dispatch(setIsLoggedIn(false));
+        dispatch(setIsLoggedIn("false"));
         navigate("/login")
     }
     const productclick = (product) => {

@@ -3,6 +3,7 @@ import axios from "axios";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import "./Login.css";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthCredential } from "firebase/auth";
 import { Toaster, toast } from 'sonner'
@@ -23,13 +24,19 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const Login = () => {
+
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [role, setRole] = useState("customer");
   const navigate = useNavigate();
-
+useEffect(()=>{
+const check=localStorage.getItem("loggedin");
+if(check=="true"){
+  navigate(-1);
+}
+},[])
   const handleEmailChange = (e) => {
     setEmail(e.target.value.trim());
   };
@@ -90,7 +97,7 @@ const Login = () => {
 
   const handleSignUpWithGoogle = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
-    localStorage.setItem("mail", email);
+   
 
     localStorage.setItem("loggedin", "true");
     dispatch(setIsLoggedIn(true));
@@ -99,12 +106,18 @@ const Login = () => {
       .signInWithPopup(provider)
       .then((userCredential) => {
         // Sign up successful, access the user data with: userCredential.user
+        localStorage.setItem("mail", userCredential.user.email);
         axios
           .post("http://localhost:3001/userloginwithgoogle", {
             email: userCredential.user.email,
           })
           .then((res) => {
             const checkrole = res.data.role;
+            console.log(res.data);
+            const userData = res.data;
+            // const dispatch = useDispatch();
+            dispatch(setUser(userData));
+            console.log(userData)
             if (checkrole == "vendor") navigate("/vendor");
             else if (checkrole == "customer") navigate("/customer");
             else toast.error("account not found");
@@ -154,6 +167,9 @@ const Login = () => {
           .confirm(verificationCode)
           .then((userCredential) => {
             // Sign up successful, access the user data with: userCredential.user
+            localStorage.setItem("mail", email);
+
+            localStorage.setItem("loggedin", "true");
             console.log(
               "Signing up with phone number:",
               userCredential.user,
@@ -225,7 +241,7 @@ const Login = () => {
               <button className="google-log-button" onClick={handleSignUpWithGoogle}>
                 Login with Google
               </button>
-
+{/* 
               <p>OR</p>
               <div>
                 <input
@@ -240,7 +256,7 @@ const Login = () => {
                 <button className="phone-button" onClick={handleSignUpWithPhoneNumber}>
                   Login with Otp
                 </button>
-              </div>
+              </div> */}
               <div>
                 <button
                   className="signup-link-button"
