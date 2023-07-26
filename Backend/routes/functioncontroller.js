@@ -20,8 +20,8 @@ exports.sendforapproval = (req, res) => {
 }
 
 exports.loginfunction = async (req, res) => {
-  let email = req.body.email;
-  let password = req.body.password;
+  const email = req.body.email;
+  const password = req.body.password;
 
   console.log("login through number", email)
   const user = await UserModel.findOne({ email: req.body.email });
@@ -45,8 +45,8 @@ exports.loginfunction = async (req, res) => {
 }
 
 exports.loginfunctionwithgoogle = async (req, res) => {
-  let email = req.body.email;
-  let password = req.body.password;
+  const email = req.body.email;
+  const password = req.body.password;
 
 
   const user = await UserModel.findOne({
@@ -84,34 +84,7 @@ exports.signup = async (req, res) => {
   }
 
 
-  // let email = req.body.email;
-  // let password = req.body.password;
-  // let role = req.body.role;
-  // let number = req.body.phoneNumber;
-  // let body = {
-  //   email,
-  //   password,
-  //   number
-  // }
-  // const user =  UserModel.findOne({
-  //   $or: [
-  //     { email: email },
-  //     { number: number }]
-  // }).then(
-  //  res.end("account already exist")
-  // );
-  // const userobj = new UserModel(req.body);
 
-  // userobj.save()
-  //   .then(result => {
-  //     // console.log("new user data")
-  //     // console.log(result)
-
-  //   })
-  //   .catch(err => {
-  //     console.log(err);
-  //   });
-  // res.send("added");
 
 }
 exports.getavailableproducts = (req, res) => {
@@ -182,12 +155,12 @@ exports.getuser = (req, res) => {
     });
 }
 exports.updateproduct = (req, res) => {
-  let _id = req.body._id;
-  let description = req.body.description;
-  let category = req.body.category;
-  let price = req.body.price;
-  let discounted = req.body.discounted;
-  let images = req.body.images;
+  const _id = req.body._id;
+  const description = req.body.description;
+  const category = req.body.category;
+  const price = req.body.price;
+  const discounted = req.body.discounted;
+  const images = req.body.images;
   const person = ProductModel.findOneAndUpdate({
     $or: [
       { _id: req.body._id },
@@ -221,18 +194,18 @@ exports.getorderhistory = (req, res) => {
 //finish adding order through properties
 exports.addorder = (req, res) => {
 
-  let title = req.body.title;
-  let description = req.body.description;
-  let category = req.body.category;
-  let price = req.body.price;
-  let customer = req.body.email;
-  let vendor = req.body.vendor;
+  const title = req.body.title;
+  const description = req.body.description;
+  const category = req.body.category;
+  const price = req.body.price;
+  const customer = req.body.email;
+  const vendor = req.body.vendor;
 
-  let quantity = req.body.quantity;
+  const quantity = req.body.quantity;
   console.log(req.body.email);
 
-  let status = req.body.status;
-  let body = {
+  const status = req.body.status;
+  const body = {
     title, description, status, customer, category, price, vendor, status, customer, quantity
   }
 
@@ -351,14 +324,14 @@ exports.getapproval = (req, res) => {
 
 }
 exports.addingproduct = (req, res) => {
-  let title = req.body.title;
-  let description = req.body.description;
-  let category = req.body.category;
-  let price = req.body.price;
-  let discounted = req.body.discounted;
-  let vendor = req.body.vendor;
+  const title = req.body.title;
+  const description = req.body.description;
+  const category = req.body.category;
+  const price = req.body.price;
+  const discounted = req.body.discounted;
+  const vendor = req.body.vendor;
   const images = req.body.images;
-  let body = {
+  const body = {
     title, description, category, price, discounted, vendor, images
   }
 
