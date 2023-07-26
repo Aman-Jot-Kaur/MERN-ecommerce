@@ -4,6 +4,7 @@ const appcontroller = require("./functioncontroller");
 
 router.post('/usersignup', appcontroller.signup)
 router.post('/userlogin', appcontroller.loginfunction)
+router.post('/signupnumber',appcontroller.signupnumber)//add number in user from loginwithgoogle
 router.post('/userloginwithgoogle', appcontroller.loginfunctionwithgoogle)
 router.get('/getavailableproducts', appcontroller.getavailableproducts)//getting all products exclusive to sell to cuss
 router.post('/cart', appcontroller.addingtocart)//add to cart

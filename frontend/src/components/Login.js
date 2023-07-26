@@ -99,7 +99,6 @@ if(check=="true"){
     const provider = new firebase.auth.GoogleAuthProvider();
    
 
-    localStorage.setItem("loggedin", "true");
     dispatch(setIsLoggedIn(true));
     firebase
       .auth()
@@ -118,6 +117,8 @@ if(check=="true"){
             // const dispatch = useDispatch();
             dispatch(setUser(userData));
             console.log(userData)
+            
+    localStorage.setItem("loggedin", "true");
             if (checkrole == "vendor") navigate("/vendor");
             else if (checkrole == "customer") navigate("/customer");
             else toast.error("account not found");
@@ -219,7 +220,7 @@ if(check=="true"){
                   value={email}
                   onChange={handleEmailChange}
                   required
-                  placeholder="Email/number"
+                  placeholder="Email/ Phone number"
                 />
               </div>
               <div>

@@ -4,7 +4,7 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
-
+import { Toaster, toast } from 'sonner'
 import { setUser, setIsLoggedIn, setLoading, setError, selectUser } from '../../features/userSlice';
 import axios from 'axios';
 const AdminPage = () => {
@@ -29,7 +29,8 @@ const AdminPage = () => {
             ? products.filter(
                 (product) => product.category.toLowerCase() === selectedCategory
             )
-            : products)
+            :products)
+            console.log(filteredProducts,"filtereed")
     };
     useEffect(()=>{if(user.user.role!=="admin"){
         navigate(-1);
@@ -100,7 +101,7 @@ const AdminPage = () => {
         const email = localStorage.getItem("mail");
 
         axios.post("http://localhost:3001/cart", { cart: temporary, email }).then(
-            alert("cart updated")
+            toast.success("cart updated")
         ).catch(error => {
             console.log(error)
         })
@@ -121,14 +122,17 @@ const AdminPage = () => {
 
         localStorage.setItem("loggedin", 'false');
         firebase.auth().signOut().then(function () {
-            alert("signed out")
+          toast.success("signed out")
         }).catch(function (error) {
-            alert(error)
+            toast.error(error.message)
         });
         navigate("/login")
     }
 
     return (
+        <div>
+             <Toaster />
+        
         <div className='maindiv'>
             {/* Navbar */}
             <nav className="navbar">
@@ -203,6 +207,7 @@ const AdminPage = () => {
             </div>
             {filteredProducts.size != 0 && <div>
                 <p style={{ marginLeft: "40%", fontSize: "32px" }}>{selectedCategory}</p>
+                
                 <div className="product-list">
                     {/* Display products in divs */}
                     {filteredProducts.map((product) => (
@@ -217,6 +222,7 @@ const AdminPage = () => {
                             {product.outofstock == "true" && <button className='outofstock' >Sorry out of stock</button>}
                         </div>
                     ))}</div>
+                    {filteredProducts.length==0 && <p style={{marginLeft:"40%"}}>No products in this category yet</p>}
             </div>}
             {/* Products */}
             <p style={{ marginLeft: "40%", fontSize: "32px" }}>All products</p>
@@ -236,7 +242,7 @@ const AdminPage = () => {
                 ))}
             </div>
         </div>
-
+        </div>
     );
 };
 

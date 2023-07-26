@@ -40,7 +40,7 @@ const Profile = () => {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [passwordAlert, setPasswordAlert] = useState(false);
   const [pic, setPic] = useState('');
-  const [num,setnum]=useState();
+  const [num,setnum]=useState(101);
   useEffect(() => {
     const mail = localStorage.getItem("mail");
     console.log("mail", mail)
@@ -100,23 +100,37 @@ const Profile = () => {
     dispatch(updateAddress(totalOrders));
 
     dispatch(updateNumber(phone));
-    if (confirmPassword == "" && num!=='') {
-      if(num.length!==10){
+    if (confirmPassword == "" && num!==101) {
+      if(num?.length!==10){
         toast.error("Please enter a valid number");
         return;
       }
+      axios
+        .post("http://localhost:3001/signupnumber", {
+          
+          number: num,
+        
+        })
+        .then((res) => { if(res.data=="already exist") {toast(res.data); return; }
+        })
+        .catch((error) => {
+          // Handle sign up errors
+
+          toast(error.message);
+          return;
+        });
       axios.post("http://localhost:3001/updateuser", { email, number: num, displayName: name, address: totalOrders, profile: pic }).then(
         (res) => {
           console.log(res)
         })
 
     }
-    else if(num=='' && confirmPassword == ""){
+    else if(num==101 && confirmPassword == ""){
       axios.post("http://localhost:3001/updateuser", { email, displayName: name, address: totalOrders,  profile: pic }).then(
         (res) => {
           console.log(res)
         })}
-        else if(num=='' && confirmPassword == ""){
+        else if(num==101 && confirmPassword == ""){
           axios.post("http://localhost:3001/updateuser", { email, displayName: name, address: totalOrders,  profile: pic,password:confirmPassword }).then(
             (res) => {
               console.log(res)
@@ -197,7 +211,7 @@ const Profile = () => {
 
   const handleConfirmPasswordSave = () => {
     // Perform password change logic here
-    if (confirmPassword.trim().length < 6) {
+    if (confirmPassword?.trim().length < 6) {
       toast.error("Password should be at least 6 characters.");
       return;
     }
@@ -271,7 +285,7 @@ const Profile = () => {
                   type="number"
                   value={phone}
                  disabled
-                  onChange={handlePhoneNumberChange}
+                 
                   style={{ width: "100%" }}
                   placeholder="Number"
                   // min={1000000000}

@@ -68,7 +68,31 @@ exports.loginfunctionwithgoogle = async (req, res) => {
     res.send("not found")
   }
 }
+exports.signupnumber = async (req, res) => {
 
+  const { email } = req.body;
+  try {
+
+    const user = await UserModel.findOne({ number:email })
+    console.log(user)
+    if (user) {
+      console.log("user found")
+      return res.send("already exist")
+    }
+    else {
+      const user = new UserModel(req.body);
+      await user.save();
+      res.send("added")
+    }
+  } catch (error) {
+    console.log(error)
+  }
+
+  localStorage.setItem("loggedin", "true");
+
+
+
+}
 exports.signup = async (req, res) => {
 
   const { email } = req.body;
@@ -88,6 +112,7 @@ exports.signup = async (req, res) => {
     console.log(error)
   }
 
+  localStorage.setItem("loggedin", "true");
 
 
 

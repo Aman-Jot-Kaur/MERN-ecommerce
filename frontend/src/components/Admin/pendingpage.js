@@ -3,6 +3,7 @@ import "./adminpage.css"
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useDispatch, useSelector } from "react-redux";
+import { Toaster, toast } from 'sonner'
 const PendingPage = () => {
     const dispatch = useDispatch();
     const usernow = useSelector((state) => state.user);
@@ -54,7 +55,7 @@ const PendingPage = () => {
             ...products.slice(index + 1)
           ]);
     axios.post("http://localhost:3001/approveproduct",product).then(
-        alert("sent product for approval request")
+     toast.success("approved")
         
     ) .catch(
         (error)=>{console.log(error)}
@@ -63,6 +64,9 @@ const PendingPage = () => {
     
 const user=localStorage.getItem("mail");
     return (
+        <div>
+            <Toaster/>
+        
         <div className='maindiv'>
             {/* Navbar */}
             <nav className="navbar">
@@ -90,6 +94,7 @@ const user=localStorage.getItem("mail");
             
 
             
+        </div>
         </div>
     );
 };

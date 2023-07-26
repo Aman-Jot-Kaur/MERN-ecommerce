@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useDispatch, useSelector } from "react-redux";
 import { getStorage } from "firebase/storage";
 import { useNavigate } from 'react-router-dom';
+import { Toaster, toast } from 'sonner'
 const ProfileList = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
@@ -18,7 +19,7 @@ const ProfileList = () => {
         console.log(res)
       })
       setdisable(_id)
-    alert(`Disabling profile with ID: ${_id}`);
+   toast.success(`Disabling profile with ID: ${_id}`);
  
   };
   const navigate = useNavigate();
@@ -46,6 +47,9 @@ const ProfileList = () => {
       })
   }, []);
   return (
+    <div>
+      <Toaster/>
+   
     <div className="profile-list-container">
       <h2>Profile List</h2>
       <button
@@ -70,7 +74,7 @@ const ProfileList = () => {
           </li>
         ))}
       </ul>
-    </div>
+    </div> </div>
   );
 };
 
