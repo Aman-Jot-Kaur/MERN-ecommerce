@@ -37,6 +37,13 @@ const userSlice = createSlice({
         updatePassword: (state, action) => {
             state.user.password = action.password;
         },
+        updateProfile: (state, action) => {
+            state.user.profile = action.profile;
+        },
+        updateDisplayName: (state, action) => {
+            state.user.displayName = action.displayName;
+        },
+
     },
 });
 

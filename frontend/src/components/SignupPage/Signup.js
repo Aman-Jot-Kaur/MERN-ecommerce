@@ -27,14 +27,10 @@ const SignUpForm = () => {
   const [phoneNumber, setPhoneNumber] = useState();
   const [role, setRole] = useState("customer");
   const navigate = useNavigate();
-  useEffect(()=>{
-    const check=localStorage.getItem("loggedin");
-    if(check=="true"){
-      navigate(-1);
-    }
-    },[])
+
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
+
   };
 
   const handlePasswordChange = (e) => {
@@ -242,12 +238,12 @@ const SignUpForm = () => {
                   Submit
                 </button>
                 <button className="google-button" onClick={handleSignUpWithGoogle}>
-                Sign Up with Google
-              </button>
+                  Sign Up with Google
+                </button>
               </div>
             </form>
             <div className="buttons">
-              
+
               {/* <button className="phone-button" onClick={handleSignUpWithPhoneNumber}>
                 Sign Up with Otp
               </button> */}

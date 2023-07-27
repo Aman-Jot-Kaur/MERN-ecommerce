@@ -57,9 +57,11 @@ const CustomerPage = () => {
         console.log(user)
 
     }, [])
-    useEffect(()=>{if(user.user.role!=="customer"){
-        navigate(-1);
-    }},[])
+    useEffect(() => {
+        if (user.user.role !== "customer") {
+            navigate(-1);
+        }
+    }, [])
     useEffect(() => {
         // Update the component state with Redux user data
         setAddress(user.user.address)
@@ -197,6 +199,7 @@ const CustomerPage = () => {
                         borderRadius: '14px'
                     }} onClick={() => handleCategorySelect('fashion')}>
                         <p>Fashion</p>
+
                         <img style={{ width: "150px", height: "200px" }} src="https://i.pinimg.com/originals/ec/f1/e1/ecf1e1f80c28b4cce023e6b55bc0f0b1.jpg" alt="Fashion" />
                     </div>
                     <div className="category" style={{
@@ -207,9 +210,11 @@ const CustomerPage = () => {
                         <img style={{ width: "150px", height: "200px" }} src="https://th.bing.com/th/id/OIP.hxKWlnED8Suu3exNpJuTJgHaHa?w=218&h=218&c=7&r=0&o=5&pid=1.7" alt="Tech" />
                     </div>
                 </div>
+
                 {filteredProducts.size != 0 && <div>
                     <p style={{ marginLeft: "40%", fontSize: "32px" }}>{selectedCategory}</p>
                     <div className="product-list">
+
                         {/* Display products in divs */}
                         {filteredProducts.map((product) => (
                             <div key={product._id} className="product">
@@ -222,7 +227,9 @@ const CustomerPage = () => {
                                 {product.outofstock != "true" && <button className='addtocart' onClick={() => additemtocart(product)}>Add to cart</button>}
                                 {product.outofstock == "true" && <button className='outofstock' >Sorry out of stock</button>}
                             </div>
-                        ))}</div>
+                        ))}
+                    </div>
+                    {filteredProducts.length == 0 && selectedCategory !== null && <p style={{ marginLeft: "40%" }}>No products in this category yet</p>}
                 </div>}
                 {/* Products */}
                 {/* Products */}

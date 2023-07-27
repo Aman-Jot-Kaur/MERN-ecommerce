@@ -40,7 +40,7 @@ const Profile = () => {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [passwordAlert, setPasswordAlert] = useState(false);
   const [pic, setPic] = useState('');
-  const [num,setnum]=useState(101);
+  const [num, setnum] = useState(101);
   useEffect(() => {
     const mail = localStorage.getItem("mail");
     console.log("mail", mail)
@@ -49,30 +49,39 @@ const Profile = () => {
         const user = res.data;
         console.log(user)
         setEmail(user.email)
-     
+
         setPhone(user.number)
-       
-        
+
+
         setPhone(user.number)
         setName(user.displayName)
         setTotalOrders(user.address)
-        if(user.password!==undefined)
-        setPassword(user.password)
+        if (user.password !== undefined)
+          setPassword(user.password)
         else
-        setPassword("")
+          setPassword("")
         if (user.profile !== undefined) setPic(user.profile)
 
         user.profile == undefined && setPic("https://img.freepik.com/free-vector/cheerful-cute-girl-character-hand-drawn-cartoon-art-illustration_56104-968.jpg?w=2000")
       })
   }, [])
+  const {
+    REACT_APP_FIREBASE_API_KEY,
+    REACT_APP_FIREBASE_AUTH_DOMAIN,
+    REACT_APP_FIREBASE_PROJECT_ID,
+    REACT_APP_FIREBASE_STORAGE_BUCKET,
+    REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    REACT_APP_FIREBASE_APP_ID,
+    REACT_APP_FIREBASE_MEASUREMENT_ID,
+  } = process.env;
   const firebaseConfig = {
-    apiKey: "AIzaSyBlM7dACgX8QSRPU8PsZe7UVtvTqD4saeY",
-    authDomain: "ecommerce-e81ca.firebaseapp.com",
-    projectId: "ecommerce-e81ca",
-    storageBucket: "ecommerce-e81ca.appspot.com",
-    messagingSenderId: "518888859936",
-    appId: "1:518888859936:web:39d1cacdc4abbbf37e0f45",
-    measurementId: "G-QS80JQYRL6",
+    apiKey: REACT_APP_FIREBASE_API_KEY,
+    authDomain: REACT_APP_FIREBASE_AUTH_DOMAIN,
+    projectId: REACT_APP_FIREBASE_PROJECT_ID,
+    storageBucket: REACT_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    appId: REACT_APP_FIREBASE_APP_ID,
+    measurementId: REACT_APP_FIREBASE_MEASUREMENT_ID,
   };
 
   const app = initializeApp(firebaseConfig);
@@ -88,61 +97,50 @@ const Profile = () => {
     //   console.log(num.length)
     // }
     setnum(value);
-    if(value)
-    console.log(num?.length)
+    if (value)
+      console.log(num?.length)
   };
   const handleSave = () => {
     if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) {
       toast.error("Please enter a valid email address.");
       return;
     }
-  
+
     dispatch(updateAddress(totalOrders));
 
     dispatch(updateNumber(phone));
-    if (confirmPassword == "" && num!==101) {
-      if(num?.length!==10){
+    if (confirmPassword == "" && num !== 101) {
+      if (num?.length !== 10) {
         toast.error("Please enter a valid number");
         return;
       }
-      axios
-        .post("http://localhost:3001/signupnumber", {
-          
-          number: num,
-        
-        })
-        .then((res) => { if(res.data=="already exist") {toast(res.data); return; }
-        })
-        .catch((error) => {
-          // Handle sign up errors
 
-          toast(error.message);
-          return;
-        });
       axios.post("http://localhost:3001/updateuser", { email, number: num, displayName: name, address: totalOrders, profile: pic }).then(
         (res) => {
           console.log(res)
         })
 
     }
-    else if(num==101 && confirmPassword == ""){
-      axios.post("http://localhost:3001/updateuser", { email, displayName: name, address: totalOrders,  profile: pic }).then(
+    else if (num == 101 && confirmPassword == "") {
+      axios.post("http://localhost:3001/updateuser", { email, displayName: name, address: totalOrders, profile: pic }).then(
         (res) => {
           console.log(res)
-        })}
-        else if(num==101 && confirmPassword == ""){
-          axios.post("http://localhost:3001/updateuser", { email, displayName: name, address: totalOrders,  profile: pic,password:confirmPassword }).then(
-            (res) => {
-              console.log(res)
-            })}
-            else{
-              axios.post("http://localhost:3001/updateuser", { email,number: num, displayName: name, address: totalOrders,  profile: pic,password:confirmPassword }).then(
-                (res) => {
-                  console.log(res)
-                })
-            }
-      setCurrentPassword('');
-    
+        })
+    }
+    else if (num == 101 && confirmPassword == "") {
+      axios.post("http://localhost:3001/updateuser", { email, displayName: name, address: totalOrders, profile: pic, password: confirmPassword }).then(
+        (res) => {
+          console.log(res)
+        })
+    }
+    else {
+      axios.post("http://localhost:3001/updateuser", { email, number: num, displayName: name, address: totalOrders, profile: pic, password: confirmPassword }).then(
+        (res) => {
+          console.log(res)
+        })
+    }
+    setCurrentPassword('');
+
     setEditMode(false);
     window.location.reload();
   };
@@ -276,7 +274,7 @@ const Profile = () => {
                 />
               )}
             </div>
-            {phone!==undefined && <div className="profile-row">
+            {phone !== undefined && <div className="profile-row">
               <label>Phone:</label>
               {!editMode ? (
                 <span>{phone}</span>
@@ -284,8 +282,8 @@ const Profile = () => {
                 <input
                   type="number"
                   value={phone}
-                 disabled
-                 
+                  disabled
+
                   style={{ width: "100%" }}
                   placeholder="Number"
                   // min={1000000000}
@@ -296,20 +294,20 @@ const Profile = () => {
                 />
               )}
             </div>}
-            {phone==undefined && <div className="profile-row">
+            {phone == undefined && <div className="profile-row">
               <label>Phone:</label>
               {!editMode ? (
                 <span>{phone}</span>
               ) : (
                 <input
                   type="number"
-                 
+
                   onChange={handlePhoneNumberChange}
                   style={{ width: "100%" }}
                   placeholder="Number"
                   // min={1000000000}
                   max={9999999999}
-                maxLength="10"
+                  maxLength="10"
                   inputMode="numeric"
                   pattern="[0-9]*"
                 />
@@ -370,7 +368,7 @@ const Profile = () => {
               <div className="modal-row">
                 <label>Previous Password:</label>
                 <input
-              placeholder='leave empty if no password'
+                  placeholder='leave empty if no password'
                   type="password"
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}

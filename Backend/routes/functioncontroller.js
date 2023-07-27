@@ -73,7 +73,7 @@ exports.signupnumber = async (req, res) => {
   const { email } = req.body;
   try {
 
-    const user = await UserModel.findOne({ number:email })
+    const user = await UserModel.findOne({ number: email })
     console.log(user)
     if (user) {
       console.log("user found")
@@ -177,7 +177,7 @@ exports.getuser = (req, res) => {
       { email: mail },
       { number: mail }]
   }).then(function (models) {
-console.log(models)
+    console.log(models)
     res.send(models)
   })
     .catch(function (err) {
@@ -191,11 +191,11 @@ exports.updateproduct = (req, res) => {
   const price = req.body.price;
   const discountedPrice = req.body.discounted;
   const images = req.body.images;
-  const title=req.body.title;
+  const title = req.body.title;
   const person = ProductModel.findOneAndUpdate({
-    _id: req.body._id 
-      
-  }, { description, category, price, discountedPrice, images,title }).then(function (models) {
+    _id: req.body._id
+
+  }, { description, category, price, discountedPrice, images, title }).then(function (models) {
 
     console.log("updated product")
     console.log(person)
@@ -270,6 +270,7 @@ exports.updateuser = (req, res) => {
 
     console.log("updated user")
     console.log(disable)
+    res.send(person)
     console.log(person.email)
   })
     .catch(function (err) {

@@ -17,7 +17,8 @@ const VendorPage = () => {
     const [cart, setCart] = useState([
 
     ]);
-    const role=user.user.role;
+    const role = user.user.role;
+    const mail = user.user.mail;
     const [pic, setPic] = useState();
     const [address, setAddress] = useState();
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -42,8 +43,7 @@ const VendorPage = () => {
         );
     }, [selectedCategory]);
     useEffect(() => {
-        const mail = localStorage.getItem("mail");
-        console.log("mail", mail)
+
         axios.post("http://localhost:3001/getuser", { mail }).then(
             (res) => {
                 const user = res.data;
@@ -53,12 +53,15 @@ const VendorPage = () => {
                 {
                     user.profile == undefined && setPic("https://img.freepik.com/free-vector/cheerful-cute-girl-character-hand-drawn-cartoon-art-illustration_56104-968.jpg?w=2000")
                 }
+                setCart[res.data.cart]
                 console.log("asd", address)
             })
     }, [])
-    useEffect(()=>{if(role!=="vendor"){
-        navigate(-1);
-    }},[])
+    useEffect(() => {
+        if (role !== "vendor") {
+            navigate(-1);
+        }
+    }, [])
     const productClick = (product) => {
         localStorage.setItem("product", JSON.stringify(product));
         console.log(product)
@@ -70,17 +73,7 @@ const VendorPage = () => {
     const cartpageopen = () => {
         navigate("/cart")
     }
-    useEffect(() => {
-        console.log("Vin")
-        const email = localStorage.getItem("mail");
-        axios
-            .get(`http://localhost:3001/getcart?q=${email}`).then((res) => {
-                console.log("Vin")
-                setCart[res.data.cart]
-            }).catch(error => {
-                console.log(error)
-            })
-    }, []);
+
     //CustomerProductModel
     useEffect(() => {
         axios
@@ -94,15 +87,17 @@ const VendorPage = () => {
 
     const handleLogout = () => {
         localStorage.setItem("mail", "");
-    
+
         localStorage.setItem("loggedin", 'false');
         firebase.auth().signOut().then(function () {
             toast.success("signed out")
         }).catch(function (error) {
             toast.error(error.message)
         });
+        localStorage.setItem("loggedin", 'f');
         navigate("/login")
     }
+
     const additemtocart = (product) => {
 
         let temporary = [...cart, product];
@@ -211,7 +206,13 @@ const VendorPage = () => {
                                 {product.outofstock != "true" && <button className='addtocart' onClick={() => additemtocart(product)}>Add to cart</button>}
                                 {product.outofstock == "true" && <button className='outofstock' >Sorry out of stock</button>}
                             </div>
-                        ))}</div>
+                        ))
+
+                        }
+                        {filteredProducts.length == 0 && selectedCategory !== null && <p style={{ marginLeft: "40%" }}>No products in this category yet</p>}
+                    </div>
+
+
                 </div>}
                 {/* Products */}
                 <p style={{ marginLeft: "40%", fontSize: "32px" }}>All products</p>

@@ -11,14 +11,23 @@ import { Toaster, toast } from 'sonner'
 import { useDispatch, useSelector } from "react-redux";
 import { setUser, setIsLoggedIn, setLoading, setError, selectUser } from '../features/userSlice';
 // Initialize Firebase with your project's configuration
+const {
+  REACT_APP_FIREBASE_API_KEY,
+  REACT_APP_FIREBASE_AUTH_DOMAIN,
+  REACT_APP_FIREBASE_PROJECT_ID,
+  REACT_APP_FIREBASE_STORAGE_BUCKET,
+  REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  REACT_APP_FIREBASE_APP_ID,
+  REACT_APP_FIREBASE_MEASUREMENT_ID,
+} = process.env;
 const firebaseConfig = {
-  apiKey: "AIzaSyBlM7dACgX8QSRPU8PsZe7UVtvTqD4saeY",
-  authDomain: "ecommerce-e81ca.firebaseapp.com",
-  projectId: "ecommerce-e81ca",
-  storageBucket: "ecommerce-e81ca.appspot.com",
-  messagingSenderId: "518888859936",
-  appId: "1:518888859936:web:39d1cacdc4abbbf37e0f45",
-  measurementId: "G-QS80JQYRL6",
+  apiKey: REACT_APP_FIREBASE_API_KEY,
+  authDomain: REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: REACT_APP_FIREBASE_APP_ID,
+  measurementId: REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -31,14 +40,10 @@ const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [role, setRole] = useState("customer");
   const navigate = useNavigate();
-useEffect(()=>{
-const check=localStorage.getItem("loggedin");
-if(check=="true"){
-  navigate(-1);
-}
-},[])
+
   const handleEmailChange = (e) => {
     setEmail(e.target.value.trim());
+
   };
 
   const handlePasswordChange = (e) => {
@@ -67,7 +72,7 @@ if(check=="true"){
     }
     localStorage.setItem("mail", email);
 
-    localStorage.setItem("loggedin", true);
+
     axios
       .post("http://localhost:3001/userlogin", { email, password })
       .then((res) => {
@@ -82,9 +87,9 @@ if(check=="true"){
           navigate("/login");
         } else if (res.data.disable == "true")
           toast.error("sorry account is dis-abled");
-        else if (checkrole == "vendor") { navigate("/vendor"); dispatch(setIsLoggedIn("true")); }
-        else if (checkrole == "customer") { navigate("/customer"); dispatch(setIsLoggedIn("true")); }
-        else if (checkrole == "admin") { navigate("/admin"); dispatch(setIsLoggedIn("true")); }
+        else if (checkrole == "vendor") { localStorage.setItem("loggedin", true); dispatch(setIsLoggedIn("true")); navigate("/vendor"); }
+        else if (checkrole == "customer") { localStorage.setItem("loggedin", true); dispatch(setIsLoggedIn("true")); navigate("/customer"); dispatch(setIsLoggedIn("true")); }
+        else if (checkrole == "admin") { localStorage.setItem("loggedin", true); dispatch(setIsLoggedIn("true")); navigate("/admin"); dispatch(setIsLoggedIn("true")); }
         else {
           toast.error("account not found");
         }
@@ -97,7 +102,7 @@ if(check=="true"){
 
   const handleSignUpWithGoogle = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
-   
+
 
     dispatch(setIsLoggedIn(true));
     firebase
@@ -117,8 +122,8 @@ if(check=="true"){
             // const dispatch = useDispatch();
             dispatch(setUser(userData));
             console.log(userData)
-            
-    localStorage.setItem("loggedin", "true");
+
+            localStorage.setItem("loggedin", "true");
             if (checkrole == "vendor") navigate("/vendor");
             else if (checkrole == "customer") navigate("/customer");
             else toast.error("account not found");
@@ -242,7 +247,7 @@ if(check=="true"){
               <button className="google-log-button" onClick={handleSignUpWithGoogle}>
                 Login with Google
               </button>
-{/* 
+              {/* 
               <p>OR</p>
               <div>
                 <input
