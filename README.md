@@ -6,12 +6,21 @@ Welcome to the MERN E-commerce Website! This platform allows three types of user
 - Admin:
   - Approve products added by vendors.
   - Manage business orders and transactions.
+  - view all vendors
+  - disable vendor
+  - Act as customer
+
 
 - Vendor:
-  - Add new products to the platform.
+  - Send new products to admin for approval.
   - Edit existing products and save them as drafts.
   - Submit products for admin approval.
   - View business orders and transactions.
+  - View order status for customers
+  - View profit from all orders
+  - View their own products 
+  - Add images for products
+  - Act as customer
 
 - Customer:
   - Browse and view all products available.
@@ -19,6 +28,8 @@ Welcome to the MERN E-commerce Website! This platform allows three types of user
   - Add products to the cart and proceed to checkout.
   - View and manage the cart.
   - View order history and status.
+  - View order status
+  - Cancel order within 24 hours
 
 ## Technologies Used
 
@@ -42,4 +53,4 @@ Welcome to the MERN E-commerce Website! This platform allows three types of user
 
 1. Create a `.env` file in the project root.
 2. Add necessary environment variable:
-PORT and MONGO_URL and firebase configuration
+PORT and MONGO_URL and firebase configuration for login through google, image url generation
